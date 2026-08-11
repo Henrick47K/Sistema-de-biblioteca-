@@ -35,12 +35,13 @@ FUNCIONALIDADES INICIAIS:
 <br>
 
 
+
+
 COMO EXECUTAR:
 <br>
 
 
-
-USO DE IA NESTA ENTREGA:
+A pasta biblioteca contem o código do projeto!
 <br>
 
 -> Utilizamos a IA para gerar as histórias de usuários, a IA utilizada foi o Chat GPT.
