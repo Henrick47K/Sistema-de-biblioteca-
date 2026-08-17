@@ -6,11 +6,8 @@ public class Disponibilidade {
     private int quantidade;
 
     public Disponibilidade(int quantidade) {
-
         if (quantidade < 0) {
-            throw new IllegalArgumentException(
-                    "A quantidade não pode ser negativa."
-            );
+            throw new IllegalArgumentException("A quantidade não pode ser negativa.");
         }
 
         this.quantidade = quantidade;
@@ -18,7 +15,6 @@ public class Disponibilidade {
     }
 
     void verificarDisponibilidade() {
-
         if (disponivel) {
             System.out.println("Livro disponível!");
         } else {
@@ -27,26 +23,18 @@ public class Disponibilidade {
     }
 
     void atualizarDisponibilidade() {
-
-        if (quantidade > 0) {
-            disponivel = true;
-        } else {
-            disponivel = false;
-        }
+        disponivel = quantidade > 0;
     }
 
     void aumentarQuantidade() {
-
         quantidade++;
         atualizarDisponibilidade();
     }
 
     void diminuirQuantidade() {
-
         if (quantidade > 0) {
             quantidade--;
         }
-
         atualizarDisponibilidade();
     }
 
@@ -59,11 +47,8 @@ public class Disponibilidade {
     }
 
     public void setQuantidade(int quantidade) {
-
         if (quantidade < 0) {
-            throw new IllegalArgumentException(
-                    "A quantidade não pode ser negativa."
-            );
+            throw new IllegalArgumentException("A quantidade não pode ser negativa.");
         }
 
         this.quantidade = quantidade;

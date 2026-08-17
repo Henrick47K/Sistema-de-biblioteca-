@@ -7,7 +7,7 @@ public class Livro {
     private int codigo;
     private StatusLivro status;
 
-
+    // Enum 1: Estado do livro
     public enum StatusLivro {
         DISPONIVEL,
         EMPRESTADO,
@@ -15,6 +15,16 @@ public class Livro {
     }
 
     public Livro(String autor, String titulo, int codigo) {
+        if (autor == null || autor.isBlank()) {
+            throw new IllegalArgumentException("Autor não pode ser nulo ou vazio.");
+        }
+        if (titulo == null || titulo.isBlank()) {
+            throw new IllegalArgumentException("Título não pode ser nulo ou vazio.");
+        }
+        if (codigo <= 0) {
+            throw new IllegalArgumentException("O código do livro deve ser maior que zero.");
+        }
+
         this.autor = autor;
         this.titulo = titulo;
         this.codigo = codigo;
@@ -22,7 +32,7 @@ public class Livro {
     }
 
     void cadastroLivro() {
-        System.out.println("Livro cadastrado!");
+        System.out.println("Livro '" + titulo + "' cadastrado!");
     }
 
     void emprestar() {
@@ -45,6 +55,9 @@ public class Livro {
     }
 
     public void setAutor(String autor) {
+        if (autor == null || autor.isBlank()) {
+            throw new IllegalArgumentException("Autor não pode ser nulo ou vazio.");
+        }
         this.autor = autor;
     }
 
@@ -53,6 +66,9 @@ public class Livro {
     }
 
     public void setTitulo(String titulo) {
+        if (titulo == null || titulo.isBlank()) {
+            throw new IllegalArgumentException("Título não pode ser nulo ou vazio.");
+        }
         this.titulo = titulo;
     }
 
@@ -61,6 +77,9 @@ public class Livro {
     }
 
     public void setCodigo(int codigo) {
+        if (codigo <= 0) {
+            throw new IllegalArgumentException("O código do livro deve ser maior que zero.");
+        }
         this.codigo = codigo;
     }
 

@@ -7,17 +7,27 @@ public class Leitor {
     private String email;
 
     public Leitor(String cpf, String nome, String email) {
+        if (cpf == null || cpf.isBlank()) {
+            throw new IllegalArgumentException("CPF não pode ser nulo ou vazio.");
+        }
+        if (nome == null || nome.isBlank()) {
+            throw new IllegalArgumentException("Nome não pode ser nulo ou vazio.");
+        }
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException("E-mail não pode ser nulo ou vazio.");
+        }
+
         this.cpf = cpf;
         this.nome = nome;
         this.email = email;
     }
 
     void cadastroLeitor() {
-        System.out.println("Leitor cadastrado!");
+        System.out.println("Leitor " + nome + " cadastrado com sucesso!");
     }
 
     void reservarLivro() {
-        System.out.println("Livro reservado!");
+        System.out.println("Livro reservado para o leitor " + nome + "!");
     }
 
     public String getCpf() {
@@ -25,6 +35,9 @@ public class Leitor {
     }
 
     public void setCpf(String cpf) {
+        if (cpf == null || cpf.isBlank()) {
+            throw new IllegalArgumentException("CPF não pode ser nulo ou vazio.");
+        }
         this.cpf = cpf;
     }
 
@@ -33,6 +46,9 @@ public class Leitor {
     }
 
     public void setNome(String nome) {
+        if (nome == null || nome.isBlank()) {
+            throw new IllegalArgumentException("Nome não pode ser nulo ou vazio.");
+        }
         this.nome = nome;
     }
 
@@ -41,6 +57,9 @@ public class Leitor {
     }
 
     public void setEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException("E-mail não pode ser nulo ou vazio.");
+        }
         this.email = email;
     }
 }
