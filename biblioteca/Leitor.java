@@ -22,12 +22,13 @@ public class Leitor {
         this.email = email;
     }
 
-    void cadastroLeitor() {
+    public void cadastroLeitor() {
         System.out.println("Leitor " + nome + " cadastrado com sucesso!");
     }
 
-    void reservarLivro() {
-        System.out.println("Livro reservado para o leitor " + nome + "!");
+    public void reservarLivro(Livro livro) {
+        livro.reservar();
+        System.out.println("Livro '" + livro.getTitulo() + "' reservado para o leitor " + nome + "!");
     }
 
     public String getCpf() {

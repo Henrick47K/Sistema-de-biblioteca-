@@ -14,7 +14,7 @@ public class Disponibilidade {
         atualizarDisponibilidade();
     }
 
-    void verificarDisponibilidade() {
+    public void verificarDisponibilidade() {
         if (disponivel) {
             System.out.println("Livro disponível!");
         } else {
@@ -22,16 +22,16 @@ public class Disponibilidade {
         }
     }
 
-    void atualizarDisponibilidade() {
+    public void atualizarDisponibilidade() {
         disponivel = quantidade > 0;
     }
 
-    void aumentarQuantidade() {
+    public void aumentarQuantidade() {
         quantidade++;
         atualizarDisponibilidade();
     }
 
-    void diminuirQuantidade() {
+    public void diminuirQuantidade() {
         if (quantidade > 0) {
             quantidade--;
         }

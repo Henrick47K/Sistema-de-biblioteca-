@@ -7,7 +7,6 @@ public class Livro {
     private int codigo;
     private StatusLivro status;
 
-    // Enum 1: Estado do livro
     public enum StatusLivro {
         DISPONIVEL,
         EMPRESTADO,
@@ -31,23 +30,23 @@ public class Livro {
         this.status = StatusLivro.DISPONIVEL;
     }
 
-    void cadastroLivro() {
+    public void cadastroLivro() {
         System.out.println("Livro '" + titulo + "' cadastrado!");
     }
 
-    void emprestar() {
+    public void emprestar() {
         status = StatusLivro.EMPRESTADO;
-        System.out.println("Livro emprestado!");
+        System.out.println("Livro '" + titulo + "' emprestado!");
     }
 
-    void devolver() {
+    public void devolver() {
         status = StatusLivro.DISPONIVEL;
-        System.out.println("Livro devolvido!");
+        System.out.println("Livro '" + titulo + "' devolvido!");
     }
 
-    void reservar() {
+    public void reservar() {
         status = StatusLivro.RESERVADO;
-        System.out.println("Livro reservado!");
+        System.out.println("Livro '" + titulo + "' reservado!");
     }
 
     public String getAutor() {

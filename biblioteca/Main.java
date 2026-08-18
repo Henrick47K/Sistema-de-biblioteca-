@@ -20,32 +20,32 @@ public class Main {
         );
         livro.cadastroLivro();
 
-        // Leitor reserva o livro
-        leitor.reservarLivro();
+        // Leitor reserva o livro (atualiza o estado do livro para RESERVADO)
+        leitor.reservarLivro(livro);
+        System.out.println("Status do Livro após reserva: " + livro.getStatus());
 
         // Verificando disponibilidade inicial
         Disponibilidade disponibilidade = new Disponibilidade(1);
         disponibilidade.verificarDisponibilidade();
 
-        // Realizando o empréstimo
-        Emprestimo emprestimo = new Emprestimo(1, "10/08/2026");
+        // Realizando o empréstimo (associa o Leitor e o Livro)
+        Emprestimo emprestimo = new Emprestimo(1, leitor, livro, "10/08/2026");
         emprestimo.iniciarEmp();
-        livro.emprestar();
         disponibilidade.diminuirQuantidade();
 
-        System.out.println("Livro emprestado para: " + leitor.getNome());
-        System.out.println("Nome do livro: " + livro.getTitulo());
+        System.out.println("Livro emprestado para: " + emprestimo.getLeitor().getNome());
+        System.out.println("Nome do livro: " + emprestimo.getLivro().getTitulo());
         System.out.println("Status do Empréstimo: " + emprestimo.getStatus());
+        System.out.println("Status do Livro: " + livro.getStatus());
         disponibilidade.verificarDisponibilidade();
 
         // Devolvendo o livro
-        emprestimo.setDataDev("17/08/2026");
-        livro.devolver();
+        emprestimo.finalizarEmp("17/08/2026");
         disponibilidade.aumentarQuantidade();
-        emprestimo.finalizarEmp();
 
-        System.out.println("Livro devolvido por: " + leitor.getNome());
+        System.out.println("Livro devolvido por: " + emprestimo.getLeitor().getNome());
         System.out.println("Status do Empréstimo: " + emprestimo.getStatus());
+        System.out.println("Status do Livro: " + livro.getStatus());
         disponibilidade.verificarDisponibilidade();
     }
 }

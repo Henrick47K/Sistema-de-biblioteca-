@@ -2,7 +2,6 @@ package biblioteca;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BibliotecaTest {
@@ -23,6 +22,18 @@ public class BibliotecaTest {
         assertThrows(IllegalArgumentException.class, () -> {
             new Disponibilidade(-5);
         });
+
+        // Valida se Emprestimo não aceita id <= 0 ou objetos nulos
+        Leitor leitorValido = new Leitor("123", "Henrique", "henrique@gmail.com");
+        Livro livroValido = new Livro("Autor", "Título", 1);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Emprestimo(0, leitorValido, livroValido, "17/08/2026");
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Emprestimo(1, null, livroValido, "17/08/2026");
+        });
     }
 
     @Test
@@ -30,6 +41,9 @@ public class BibliotecaTest {
         Livro livro = new Livro("J.R.R. Tolkien", "O Hobbit", 101);
 
         assertEquals(Livro.StatusLivro.DISPONIVEL, livro.getStatus());
+
+        livro.reservar();
+        assertEquals(Livro.StatusLivro.RESERVADO, livro.getStatus());
 
         livro.emprestar();
         assertEquals(Livro.StatusLivro.EMPRESTADO, livro.getStatus());
@@ -47,10 +61,16 @@ public class BibliotecaTest {
         assertEquals(0, disp.getQuantidade());
         assertFalse(disp.isDisponivel());
 
-        Emprestimo emp = new Emprestimo(1, "17/08/2026");
-        assertEquals(Emprestimo.StatusEmprestimo.ATIVO, emp.getStatus());
+        Leitor leitor = new Leitor("123", "Henrique", "henrique@gmail.com");
+        Livro livro = new Livro("J.R.R. Tolkien", "O Hobbit", 101);
 
-        emp.finalizarEmp();
+        Emprestimo emp = new Emprestimo(1, leitor, livro, "17/08/2026");
+        emp.iniciarEmp();
+        assertEquals(Emprestimo.StatusEmprestimo.ATIVO, emp.getStatus());
+        assertEquals(Livro.StatusLivro.EMPRESTADO, livro.getStatus());
+
+        emp.finalizarEmp("24/08/2026");
         assertEquals(Emprestimo.StatusEmprestimo.FINALIZADO, emp.getStatus());
+        assertEquals(Livro.StatusLivro.DISPONIVEL, livro.getStatus());
     }
 }
