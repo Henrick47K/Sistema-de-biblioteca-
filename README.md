@@ -1,6 +1,6 @@
 # BiblioTech
 
-BiblioTech V1.0.0
+Tag BiblioTech V1.0.0
 
 Primeira versão estável do Módulo Core da Biblioteca, contendo entidades de domínio, tratamento de exceções, validações de regras de negócio e testes automatizados.  Recursos Implementados:Gestão de Leitor: Cadastro e validação de dados obrigatórios de identificação.  Gestão de Livro: Alteração de estados (DISPONIVEL, EMPRESTADO, RESERVADO) com proteção de regras de negócio.  Controle de Disponibilidade: Controle de quantidade em estoque e prevenção contra saldos negativos.  Ciclo de Empréstimo: Criação, inicialização e encerramento de empréstimos com atualização automática do status do livro.  Execução e Testes: Classe Main com o fluxo completo da aplicação e suíte de testes unitários com JUnit 5 na classe BibliotecaTest para garantir a integridade do sistema. 
 
