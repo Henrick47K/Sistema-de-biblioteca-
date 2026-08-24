@@ -1,5 +1,7 @@
 # BiblioTech
 
+BiblioTech V1.0.0
+
 INTEGRANTES:
 
 -> Henrique Duarte Lima
@@ -32,12 +34,6 @@ FUNCIONALIDADES INICIAIS:
 -> Registro de devoluções 
 <br>
 -> Consulta de livros emprestados
-<br>
-
-
-
-
-COMO EXECUTAR:
 <br>
 
 
