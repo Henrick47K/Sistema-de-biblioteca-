@@ -27,14 +27,14 @@ public class Leitor {
     }
 
     public void reservarLivro(Livro livro) {
+        if (livro == null) {
+            throw new IllegalArgumentException("Livro não pode ser nulo.");
+        }
         livro.reservar();
         System.out.println("Livro '" + livro.getTitulo() + "' reservado para o leitor " + nome + "!");
     }
 
-    public String getCpf() {
-        return cpf;
-    }
-
+    public String getCpf() { return cpf; }
     public void setCpf(String cpf) {
         if (cpf == null || cpf.isBlank()) {
             throw new IllegalArgumentException("CPF não pode ser nulo ou vazio.");
@@ -42,10 +42,7 @@ public class Leitor {
         this.cpf = cpf;
     }
 
-    public String getNome() {
-        return nome;
-    }
-
+    public String getNome() { return nome; }
     public void setNome(String nome) {
         if (nome == null || nome.isBlank()) {
             throw new IllegalArgumentException("Nome não pode ser nulo ou vazio.");
@@ -53,10 +50,7 @@ public class Leitor {
         this.nome = nome;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
+    public String getEmail() { return email; }
     public void setEmail(String email) {
         if (email == null || email.isBlank()) {
             throw new IllegalArgumentException("E-mail não pode ser nulo ou vazio.");

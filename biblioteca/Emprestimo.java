@@ -36,22 +36,25 @@ public class Emprestimo {
     }
 
     public void iniciarEmp() {
+        if (this.status == StatusEmprestimo.FINALIZADO) {
+            throw new IllegalStateException("Empréstimo finalizado não pode ser reiniciado.");
+        }
         this.status = StatusEmprestimo.ATIVO;
         this.livro.emprestar();
         System.out.println("Empréstimo " + id + " iniciado para " + leitor.getNome() + "!");
     }
 
     public void finalizarEmp(String dataDev) {
+        if (this.status == StatusEmprestimo.FINALIZADO) {
+            throw new IllegalStateException("Empréstimo já está finalizado.");
+        }
         setDataDev(dataDev);
         this.status = StatusEmprestimo.FINALIZADO;
         this.livro.devolver();
         System.out.println("Empréstimo " + id + " finalizado!");
     }
 
-    public int getId() {
-        return id;
-    }
-
+    public int getId() { return id; }
     public void setId(int id) {
         if (id <= 0) {
             throw new IllegalArgumentException("ID do empréstimo deve ser maior que zero.");
@@ -59,17 +62,9 @@ public class Emprestimo {
         this.id = id;
     }
 
-    public Leitor getLeitor() {
-        return leitor;
-    }
-
-    public Livro getLivro() {
-        return livro;
-    }
-
-    public String getDataEmp() {
-        return dataEmp;
-    }
+    public Leitor getLeitor() { return leitor; }
+    public Livro getLivro() { return livro; }
+    public String getDataEmp() { return dataEmp; }
 
     public void setDataEmp(String dataEmp) {
         if (dataEmp == null || dataEmp.isBlank()) {
@@ -78,9 +73,7 @@ public class Emprestimo {
         this.dataEmp = dataEmp;
     }
 
-    public String getDataDev() {
-        return dataDev;
-    }
+    public String getDataDev() { return dataDev; }
 
     public void setDataDev(String dataDev) {
         if (dataDev == null || dataDev.isBlank()) {
@@ -89,7 +82,5 @@ public class Emprestimo {
         this.dataDev = dataDev;
     }
 
-    public StatusEmprestimo getStatus() {
-        return status;
-    }
+    public StatusEmprestimo getStatus() { return status; }
 }

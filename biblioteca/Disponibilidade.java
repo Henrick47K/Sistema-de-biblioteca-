@@ -32,19 +32,15 @@ public class Disponibilidade {
     }
 
     public void diminuirQuantidade() {
-        if (quantidade > 0) {
-            quantidade--;
+        if (quantidade <= 0) {
+            throw new IllegalStateException("Não há exemplares disponíveis para diminuir.");
         }
+        quantidade--;
         atualizarDisponibilidade();
     }
 
-    public boolean isDisponivel() {
-        return disponivel;
-    }
-
-    public int getQuantidade() {
-        return quantidade;
-    }
+    public boolean isDisponivel() { return disponivel; }
+    public int getQuantidade() { return quantidade; }
 
     public void setQuantidade(int quantidade) {
         if (quantidade < 0) {

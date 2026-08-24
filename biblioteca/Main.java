@@ -3,49 +3,52 @@ package biblioteca;
 public class Main {
 
     public static void main(String[] args) {
+        System.out.println("=== INÍCIO DO FLUXO DE USO DA BIBLIOTECA ===\n");
 
-        // Criando o leitor
-        Leitor leitor = new Leitor(
-                "123456789",
-                "Henrique",
-                "henrique@gmail.com"
-        );
+        Leitor leitor = new Leitor("123.456.789-00", "Henrique Duarte", "henrique@gmail.com");
+        Livro livro = new Livro("Dante Alighieri", "Inferno de Dante", 101);
+        Disponibilidade estoque = new Disponibilidade(1);
+
         leitor.cadastroLeitor();
-
-        // Criando o livro
-        Livro livro = new Livro(
-                "Dante Alighieri",
-                "Inferno de Dante",
-                1
-        );
         livro.cadastroLivro();
+        System.out.println("Estoque inicial: " + estoque.getQuantidade() + " unidade(s).");
 
-        // Leitor reserva o livro (atualiza o estado do livro para RESERVADO)
+        System.out.println("\n--- Reserva ---");
         leitor.reservarLivro(livro);
-        System.out.println("Status do Livro após reserva: " + livro.getStatus());
+        System.out.println("Status do livro: " + livro.getStatus());
 
-        // Verificando disponibilidade inicial
-        Disponibilidade disponibilidade = new Disponibilidade(1);
-        disponibilidade.verificarDisponibilidade();
-
-        // Realizando o empréstimo (associa o Leitor e o Livro)
-        Emprestimo emprestimo = new Emprestimo(1, leitor, livro, "10/08/2026");
+        System.out.println("\n--- Empréstimo ---");
+        Emprestimo emprestimo = new Emprestimo(1, leitor, livro, "23/08/2026");
         emprestimo.iniciarEmp();
-        disponibilidade.diminuirQuantidade();
+        estoque.diminuirQuantidade();
 
-        System.out.println("Livro emprestado para: " + emprestimo.getLeitor().getNome());
-        System.out.println("Nome do livro: " + emprestimo.getLivro().getTitulo());
         System.out.println("Status do Empréstimo: " + emprestimo.getStatus());
         System.out.println("Status do Livro: " + livro.getStatus());
-        disponibilidade.verificarDisponibilidade();
+        System.out.println("Estoque atual: " + estoque.getQuantidade());
 
-        // Devolvendo o livro
-        emprestimo.finalizarEmp("17/08/2026");
-        disponibilidade.aumentarQuantidade();
+        System.out.println("\n--- Testando Proteção de Regra de Negócio ---");
+        try {
+            System.out.println("Tentando emprestar o mesmo livro novamente...");
+            livro.emprestar();
+        } catch (IllegalStateException e) {
+            System.out.println("Validação funcionou! Erro capturado: " + e.getMessage());
+        }
 
-        System.out.println("Livro devolvido por: " + emprestimo.getLeitor().getNome());
-        System.out.println("Status do Empréstimo: " + emprestimo.getStatus());
-        System.out.println("Status do Livro: " + livro.getStatus());
-        disponibilidade.verificarDisponibilidade();
+        try {
+            System.out.println("Tentando dar baixa em estoque zerado...");
+            estoque.diminuirQuantidade();
+        } catch (IllegalStateException e) {
+            System.out.println("Validação funcionou! Erro capturado: " + e.getMessage());
+        }
+
+        System.out.println("\n--- Devolução ---");
+        emprestimo.finalizarEmp("30/08/2026");
+        estoque.aumentarQuantidade();
+
+        System.out.println("Status final do Empréstimo: " + emprestimo.getStatus());
+        System.out.println("Status final do Livro: " + livro.getStatus());
+        System.out.println("Estoque restabelecido: " + estoque.getQuantidade() + " unidade(s).");
+
+        System.out.println("\n=== FLUXO CONCLUÍDO COM SUCESSO ===");
     }
 }

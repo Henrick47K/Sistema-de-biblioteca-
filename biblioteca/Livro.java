@@ -35,24 +35,30 @@ public class Livro {
     }
 
     public void emprestar() {
+        if (this.status == StatusLivro.EMPRESTADO) {
+            throw new IllegalStateException("Livro já está emprestado.");
+        }
         status = StatusLivro.EMPRESTADO;
         System.out.println("Livro '" + titulo + "' emprestado!");
     }
 
     public void devolver() {
+        if (this.status == StatusLivro.DISPONIVEL) {
+            throw new IllegalStateException("Livro já está disponível.");
+        }
         status = StatusLivro.DISPONIVEL;
         System.out.println("Livro '" + titulo + "' devolvido!");
     }
 
     public void reservar() {
+        if (this.status == StatusLivro.EMPRESTADO) {
+            throw new IllegalStateException("Não é possível reservar um livro emprestado.");
+        }
         status = StatusLivro.RESERVADO;
         System.out.println("Livro '" + titulo + "' reservado!");
     }
 
-    public String getAutor() {
-        return autor;
-    }
-
+    public String getAutor() { return autor; }
     public void setAutor(String autor) {
         if (autor == null || autor.isBlank()) {
             throw new IllegalArgumentException("Autor não pode ser nulo ou vazio.");
@@ -60,10 +66,7 @@ public class Livro {
         this.autor = autor;
     }
 
-    public String getTitulo() {
-        return titulo;
-    }
-
+    public String getTitulo() { return titulo; }
     public void setTitulo(String titulo) {
         if (titulo == null || titulo.isBlank()) {
             throw new IllegalArgumentException("Título não pode ser nulo ou vazio.");
@@ -71,10 +74,7 @@ public class Livro {
         this.titulo = titulo;
     }
 
-    public int getCodigo() {
-        return codigo;
-    }
-
+    public int getCodigo() { return codigo; }
     public void setCodigo(int codigo) {
         if (codigo <= 0) {
             throw new IllegalArgumentException("O código do livro deve ser maior que zero.");
@@ -82,7 +82,5 @@ public class Livro {
         this.codigo = codigo;
     }
 
-    public StatusLivro getStatus() {
-        return status;
-    }
+    public StatusLivro getStatus() { return status; }
 }

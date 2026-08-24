@@ -1,31 +1,26 @@
 package biblioteca;
 
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BibliotecaTest {
 
     @Test
     void testConstrutoresInvalidosLancamExcecao() {
-        // Valida se o construtor de Leitor rejeita valores inválidos
         assertThrows(IllegalArgumentException.class, () -> {
             new Leitor("", "Henrique", "henrique@gmail.com");
         });
 
-        // Valida se o construtor de Livro rejeita códigos negativos ou zero
         assertThrows(IllegalArgumentException.class, () -> {
-            new Livro("Autor", "Título", 0);
+            new Livro("Dante Alighieri", "Inferno de Dante", 0);
         });
 
-        // Valida se Disponibilidade não aceita valores negativos
         assertThrows(IllegalArgumentException.class, () -> {
             new Disponibilidade(-5);
         });
 
-        // Valida se Emprestimo não aceita id <= 0 ou objetos nulos
         Leitor leitorValido = new Leitor("123", "Henrique", "henrique@gmail.com");
-        Livro livroValido = new Livro("Autor", "Título", 1);
+        Livro livroValido = new Livro("Dante Alighieri", "Inferno de Dante", 1);
 
         assertThrows(IllegalArgumentException.class, () -> {
             new Emprestimo(0, leitorValido, livroValido, "17/08/2026");
@@ -38,7 +33,7 @@ public class BibliotecaTest {
 
     @Test
     void testAlteracaoDeEstadoDoLivro() {
-        Livro livro = new Livro("J.R.R. Tolkien", "O Hobbit", 101);
+        Livro livro = new Livro("Dante Alighieri", "Inferno de Dante", 101);
 
         assertEquals(Livro.StatusLivro.DISPONIVEL, livro.getStatus());
 
@@ -62,7 +57,7 @@ public class BibliotecaTest {
         assertFalse(disp.isDisponivel());
 
         Leitor leitor = new Leitor("123", "Henrique", "henrique@gmail.com");
-        Livro livro = new Livro("J.R.R. Tolkien", "O Hobbit", 101);
+        Livro livro = new Livro("Dante Alighieri", "Inferno de Dante", 101);
 
         Emprestimo emp = new Emprestimo(1, leitor, livro, "17/08/2026");
         emp.iniciarEmp();
@@ -72,5 +67,20 @@ public class BibliotecaTest {
         emp.finalizarEmp("24/08/2026");
         assertEquals(Emprestimo.StatusEmprestimo.FINALIZADO, emp.getStatus());
         assertEquals(Livro.StatusLivro.DISPONIVEL, livro.getStatus());
+    }
+
+    @Test
+    void testValidaTransicoesDeEstadoInvalidas() {
+        Disponibilidade disp = new Disponibilidade(0);
+        assertThrows(IllegalStateException.class, disp::diminuirQuantidade);
+
+        Livro livro = new Livro("Dante Alighieri", "Inferno de Dante", 101);
+        livro.emprestar();
+        assertThrows(IllegalStateException.class, livro::emprestar);
+
+        Leitor leitor = new Leitor("123", "Henrique", "henrique@gmail.com");
+        Emprestimo emp = new Emprestimo(1, leitor, livro, "17/08/2026");
+        emp.finalizarEmp("24/08/2026");
+        assertThrows(IllegalStateException.class, () -> emp.finalizarEmp("25/08/2026"));
     }
 }
