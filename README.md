@@ -42,7 +42,5 @@ FUNCIONALIDADES INICIAIS:
 A pasta biblioteca contem o código do projeto!
 <br>
 
--> Utilizamos a IA para gerar as histórias de usuários, a IA utilizada foi o Chat GPT.
-
 
 
