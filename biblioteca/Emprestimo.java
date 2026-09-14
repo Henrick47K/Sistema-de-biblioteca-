@@ -1,5 +1,7 @@
 package biblioteca;
 
+import java.util.Objects;
+
 public class Emprestimo {
 
     private int id;
@@ -52,6 +54,20 @@ public class Emprestimo {
         this.status = StatusEmprestimo.FINALIZADO;
         this.livro.devolver();
         System.out.println("Empréstimo " + id + " finalizado!");
+    }
+
+    // --- equals e hashCode baseados no ID para suportar a verificação de duplicidade ---
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Emprestimo that = (Emprestimo) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     public int getId() { return id; }

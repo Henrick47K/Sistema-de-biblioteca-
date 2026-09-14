@@ -83,4 +83,56 @@ public class BibliotecaTest {
         emp.finalizarEmp("24/08/2026");
         assertThrows(IllegalStateException.class, () -> emp.finalizarEmp("25/08/2026"));
     }
+
+    // --- REQUISITO: Testes da Coleção (Inclusão, Consulta, Remoção, Duplicidade e Imutabilidade) ---
+
+    @Test
+    void testInclusaoEConsultaEmprestimo() {
+        Leitor leitor = new Leitor("123", "Henrique", "henrique@gmail.com");
+        Livro livro = new Livro("Dante Alighieri", "Inferno", 101);
+        Emprestimo emp = new Emprestimo(1, leitor, livro, "17/08/2026");
+
+        leitor.adicionarEmprestimo(emp);
+
+        assertEquals(1, leitor.getEmprestimos().size());
+        assertEquals(emp, leitor.buscarEmprestimoPorId(1));
+        assertNull(leitor.buscarEmprestimoPorId(999)); // ID que não existe
+    }
+
+    @Test
+    void testImpedirDuplicidades() {
+        Leitor leitor = new Leitor("123", "Henrique", "henrique@gmail.com");
+        Livro livro = new Livro("Dante Alighieri", "Inferno", 101);
+        Emprestimo emp1 = new Emprestimo(1, leitor, livro, "17/08/2026");
+        Emprestimo empDuplicado = new Emprestimo(1, leitor, livro, "17/08/2026"); // Mesmo ID
+
+        leitor.adicionarEmprestimo(emp1);
+
+        assertThrows(IllegalStateException.class, () -> {
+            leitor.adicionarEmprestimo(empDuplicado);
+        });
+    }
+
+    @Test
+    void testRemocaoEmprestimo() {
+        Leitor leitor = new Leitor("123", "Henrique", "henrique@gmail.com");
+        Livro livro = new Livro("Dante Alighieri", "Inferno", 101);
+        Emprestimo emp = new Emprestimo(1, leitor, livro, "17/08/2026");
+
+        leitor.adicionarEmprestimo(emp);
+        assertTrue(leitor.removerEmprestimo(1));
+        assertEquals(0, leitor.getEmprestimos().size());
+        assertFalse(leitor.removerEmprestimo(1)); // Segunda tentativa deve retornar false
+    }
+
+    @Test
+    void testProtecaoDaColecao() {
+        Leitor leitor = new Leitor("123", "Henrique", "henrique@gmail.com");
+        Livro livro = new Livro("Dante Alighieri", "Inferno", 101);
+        Emprestimo emp = new Emprestimo(1, leitor, livro, "17/08/2026");
+
+        assertThrows(UnsupportedOperationException.class, () -> {
+            leitor.getEmprestimos().add(emp); // Tentativa de modificar a lista externamente
+        });
+    }
 }

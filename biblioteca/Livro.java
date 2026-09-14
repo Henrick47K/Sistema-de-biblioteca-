@@ -1,5 +1,7 @@
 package biblioteca;
 
+import java.util.Objects;
+
 public class Livro {
 
     private String autor;
@@ -56,6 +58,19 @@ public class Livro {
         }
         status = StatusLivro.RESERVADO;
         System.out.println("Livro '" + titulo + "' reservado!");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Livro livro = (Livro) o;
+        return codigo == livro.codigo;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(codigo);
     }
 
     public String getAutor() { return autor; }

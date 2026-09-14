@@ -7,7 +7,7 @@ public class Main {
 
         Leitor leitor = new Leitor("123.456.789-00", "Henrique Duarte", "henrique@gmail.com");
 
-        // livro no sistema
+        // Livros no sistema
         Livro livro1 = new Livro("Dante Alighieri", "Inferno de Dante", 101);
         Livro livro2 = new Livro("Machado de Assis", "Dom Casmurro", 102);
         Livro livro3 = new Livro("George Orwell", "1984", 103);
@@ -31,11 +31,39 @@ public class Main {
         emprestimo.iniciarEmp();
         estoque.diminuirQuantidade();
 
+        // Registrando o empréstimo na coleção do leitor
+        leitor.adicionarEmprestimo(emprestimo);
+
         System.out.println("Status do Empréstimo: " + emprestimo.getStatus());
         System.out.println("Status do Livro 1: " + livro1.getStatus());
         System.out.println("Estoque atual: " + estoque.getQuantidade());
+        System.out.println("Empréstimos na lista do leitor: " + leitor.getEmprestimos().size());
 
-        System.out.println("\n--- Testando Proteção de Regra de Negócio ---");
+        System.out.println("\n--- Testando Consulta, Duplicidade e Proteção da Coleção ---");
+
+        // Consulta na coleção
+        Emprestimo empConsultado = leitor.buscarEmprestimoPorId(1);
+        if (empConsultado != null) {
+            System.out.println("Consulta realizada: Encontrado empréstimo ID " + empConsultado.getId() + " para o leitor " + empConsultado.getLeitor().getNome());
+        }
+
+        // Bloqueio de Duplicidade
+        try {
+            System.out.println("Tentando adicionar o mesmo empréstimo novamente ao leitor...");
+            leitor.adicionarEmprestimo(emprestimo);
+        } catch (IllegalStateException e) {
+            System.out.println("Bloqueio de duplicidade funcionou! Erro capturado: " + e.getMessage());
+        }
+
+        // Proteção da Coleção
+        try {
+            System.out.println("Tentando modificar a lista de empréstimos diretamente via getter...");
+            leitor.getEmprestimos().add(emprestimo);
+        } catch (UnsupportedOperationException e) {
+            System.out.println("Proteção funcionou! A lista retornada pelo getter é imutável.");
+        }
+
+        System.out.println("\n--- Testando Proteção de Regra de Negócio (Livro Emprestado) ---");
         try {
             System.out.println("Tentando emprestar o mesmo livro novamente...");
             livro1.emprestar();
@@ -47,9 +75,14 @@ public class Main {
         emprestimo.finalizarEmp("30/08/2026");
         estoque.aumentarQuantidade();
 
+        // Remoção do empréstimo da coleção do leitor
+        boolean removido = leitor.removerEmprestimo(1);
+        System.out.println("Empréstimo finalizado removido da lista ativa do leitor? " + removido);
+
         System.out.println("Status final do Empréstimo: " + emprestimo.getStatus());
         System.out.println("Status final do Livro 1: " + livro1.getStatus());
         System.out.println("Estoque restabelecido: " + estoque.getQuantidade() + " unidade(s).");
+        System.out.println("Quantidade final de empréstimos na lista do leitor: " + leitor.getEmprestimos().size());
 
         System.out.println("\n=== FLUXO CONCLUÍDO COM SUCESSO ===");
     }

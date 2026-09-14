@@ -1,7 +1,6 @@
 package biblioteca;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Leitor {
@@ -9,7 +8,6 @@ public class Leitor {
     private String cpf;
     private String nome;
     private String email;
-    // 1. Coleção adicionada para representar a associação 1:N
     private List<Emprestimo> emprestimos;
 
     public Leitor(String cpf, String nome, String email) {
@@ -26,19 +24,42 @@ public class Leitor {
         this.cpf = cpf;
         this.nome = nome;
         this.email = email;
-        // Inicialização da lista no construtor para evitar NullPointerException
         this.emprestimos = new ArrayList<>();
     }
 
+    // Impedir duplicidades
     public void adicionarEmprestimo(Emprestimo emprestimo) {
         if (emprestimo == null) {
             throw new IllegalArgumentException("Empréstimo não pode ser nulo.");
         }
+        if (this.emprestimos.contains(emprestimo)) {
+            throw new IllegalStateException("Este empréstimo já está cadastrado para o leitor.");
+        }
         this.emprestimos.add(emprestimo);
     }
 
+    // Consulta de objetos na coleção
+    public Emprestimo buscarEmprestimoPorId(int id) {
+        for (Emprestimo e : emprestimos) {
+            if (e.getId() == id) {
+                return e;
+            }
+        }
+        return null;
+    }
+
+    // Remoção de objetos na coleção
+    public boolean removerEmprestimo(int id) {
+        Emprestimo emp = buscarEmprestimoPorId(id);
+        if (emp != null) {
+            return this.emprestimos.remove(emp);
+        }
+        return false;
+    }
+
+    // Proteger a coleção (retorna cópia imutável)
     public List<Emprestimo> getEmprestimos() {
-        return Collections.unmodifiableList(emprestimos);
+        return List.copyOf(emprestimos);
     }
 
     public void cadastroLeitor() {
