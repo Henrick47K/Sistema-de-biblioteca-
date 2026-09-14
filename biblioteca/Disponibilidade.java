@@ -39,6 +39,14 @@ public class Disponibilidade {
         atualizarDisponibilidade();
     }
 
+    // --- NOVO: CÁLCULO QUE SERÁ DELEGADO PELA CLASSE TODO ---
+    public double calcularTaxaManutencaoEstoque(double custoPorExemplar) {
+        if (custoPorExemplar < 0) {
+            throw new IllegalArgumentException("O custo por exemplar não pode ser negativo.");
+        }
+        return this.quantidade * custoPorExemplar;
+    }
+
     public boolean isDisponivel() { return disponivel; }
     public int getQuantidade() { return quantidade; }
 

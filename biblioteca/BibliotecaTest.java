@@ -135,4 +135,23 @@ public class BibliotecaTest {
             leitor.getEmprestimos().add(emp); // Tentativa de modificar a lista externamente
         });
     }
+
+    // --- REQUISITO: Testes da Composição (Criação Interna, Esvaziamento e Cálculo Delegado) ---
+
+    @Test
+    void testComposicaoEsvaziamentoECalculoDelegado() {
+        Livro livro = new Livro("Dante Alighieri", "Inferno", 101, 5);
+
+        // Teste da criação interna da parte
+        assertNotNull(livro.getDisponibilidade());
+        assertEquals(5, livro.getDisponibilidade().getQuantidade());
+
+        // Teste do cálculo delegado à parte
+        assertEquals(50.0, livro.calcularCustoManutencaoEstoque(10.0));
+
+        // Teste do método de esvaziamento
+        livro.esvaziarEstoque();
+        assertEquals(0, livro.getDisponibilidade().getQuantidade());
+        assertFalse(livro.getDisponibilidade().isDisponivel());
+    }
 }
