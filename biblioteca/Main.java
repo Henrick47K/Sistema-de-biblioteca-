@@ -3,34 +3,28 @@ package biblioteca;
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("=== INÍCIO DO FLUXO DE USO DA BIBLIOTECA ===\n");
+        System.out.println("=== DEMONSTRAÇÃO DA HIERARQUIA E POLIMORFISMO DE LEITORES ===\n");
 
-        Leitor leitor = new Leitor("123.456.789-00", "Henrique Duarte", "henrique@gmail.com");
+        // Polimorfismo: referências da superclasse referenciando objetos das subclasses
+        Leitor leitor1 = new LeitorEstudante("111.222.333-44", "Henrique Duarte Lima", "henrique@email.com", "EST-2026-01");
+        Leitor leitor2 = new LeitorProfessor("555.666.777-88", "Rodrigo Mariotti", "rodrigo@email.com", "Computação");
 
-        // Livros no sistema (composição com a quantidade de estoque criada internamente)
-        Livro livro1 = new Livro("Dante Alighieri", "Inferno de Dante", 101, 3);
+        // Execução do comportamento especializado
+        leitor1.cadastroLeitor();
+        System.out.println("Limite de Empréstimos: " + leitor1.getLimiteEmprestimos() + " livros");
+        System.out.println("Prazo para Devolução: " + leitor1.getPrazoDevolucaoDias() + " dias\n");
 
-        leitor.cadastroLeitor();
-        livro1.cadastroLivro();
+        leitor2.cadastroLeitor();
+        System.out.println("Limite de Empréstimos: " + leitor2.getLimiteEmprestimos() + " livros");
+        System.out.println("Prazo para Devolução: " + leitor2.getPrazoDevolucaoDias() + " dias\n");
 
-        System.out.println("Estoque inicial de " + livro1.getTitulo() + ": "
-                + livro1.getDisponibilidade().getQuantidade() + " unidade(s).");
+        System.out.println("--- Teste de Reserva de Livro (Sobrescrita e Reutilização) ---");
+        Livro livro = new Livro("Dante Alighieri", "Inferno de Dante", 101, 5);
 
-        // Teste do cálculo delegado à parte (Disponibilidade)
-        double custoTotal = livro1.calcularCustoManutencaoEstoque(15.50);
-        System.out.println("Custo estimado de manutenção do estoque do livro: R$ " + custoTotal);
+        leitor1.reservarLivro(livro);
+        System.out.println();
+        leitor2.reservarLivro(livro);
 
-        System.out.println("\n--- Empréstimo ---");
-        Emprestimo emprestimo = new Emprestimo(1, leitor, livro1, "23/08/2026");
-        emprestimo.iniciarEmp();
-        leitor.adicionarEmprestimo(emprestimo);
-
-        System.out.println("Estoque após empréstimo: " + livro1.getDisponibilidade().getQuantidade());
-
-        System.out.println("\n--- Teste de Remoção/Esvaziamento ---");
-        livro1.esvaziarEstoque();
-        System.out.println("Estoque após esvaziamento: " + livro1.getDisponibilidade().getQuantidade());
-
-        System.out.println("\n=== FLUXO CONCLUÍDO COM SUCESSO ===");
+        System.out.println("\n=== EXECUÇÃO CONCLUÍDA COM SUCESSO ===");
     }
 }
