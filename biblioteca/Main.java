@@ -1,30 +1,53 @@
 package biblioteca;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("=== DEMONSTRAÇÃO DA HIERARQUIA E POLIMORFISMO DE LEITORES ===\n");
+        System.out.println("=== DEMONSTRAÇÃO DE POLIMORFISMO NO ACERVO DA BIBLIOTECA ===\n");
 
-        // Polimorfismo: referências da superclasse referenciando objetos das subclasses
-        Leitor leitor1 = new LeitorEstudante("111.222.333-44", "Henrique Duarte Lima", "henrique@email.com", "EST-2026-01");
-        Leitor leitor2 = new LeitorProfessor("555.666.777-88", "Rodrigo Mariotti", "rodrigo@email.com", "Computação");
+        List<ItemAcervo> acervo = new ArrayList<>();
 
-        // Execução do comportamento especializado
-        leitor1.cadastroLeitor();
-        System.out.println("Limite de Empréstimos: " + leitor1.getLimiteEmprestimos() + " livros");
-        System.out.println("Prazo para Devolução: " + leitor1.getPrazoDevolucaoDias() + " dias\n");
+        acervo.add(new Livro("Dante Alighieri", "Inferno de Dante", 101, 3));
+        acervo.add(new Revista("National Geographic", 204));
+        acervo.add(new Livro("Robert C. Martin", "Clean Code", 102, 1));
+        acervo.add(new Revista("Superinteressante", 450));
 
-        leitor2.cadastroLeitor();
-        System.out.println("Limite de Empréstimos: " + leitor2.getLimiteEmprestimos() + " livros");
-        System.out.println("Prazo para Devolução: " + leitor2.getPrazoDevolucaoDias() + " dias\n");
+        System.out.println("--- 1. PROCESSANDO RESERVAS (REGRAS ESPECÍFICAS) ---");
+        for (ItemAcervo item : acervo) {
+            System.out.println("Item: " + item.getTitulo());
+            try {
+                item.reservar();
+            } catch (IllegalStateException e) {
+                System.out.println("Aviso de Negócio: " + e.getMessage());
+            }
+            System.out.println();
+        }
 
-        System.out.println("--- Teste de Reserva de Livro (Sobrescrita e Reutilização) ---");
-        Livro livro = new Livro("Dante Alighieri", "Inferno de Dante", 101, 5);
+        System.out.println("--- 2. PROCESSANDO EMPRÉSTIMOS POLIMORFICAMENTE ---");
+        for (ItemAcervo item : acervo) {
+            System.out.println("Item: " + item.getTitulo());
+            try {
+                item.emprestar();
+            } catch (IllegalStateException e) {
+                System.out.println("Aviso de Negócio: " + e.getMessage());
+            }
+            System.out.println();
+        }
 
-        leitor1.reservarLivro(livro);
-        System.out.println();
-        leitor2.reservarLivro(livro);
+        System.out.println("--- 3. PROCESSANDO DEVOLUÇÕES ---");
+        for (ItemAcervo item : acervo) {
+            System.out.println("Item: " + item.getTitulo());
+            try {
+                item.devolver();
+            } catch (IllegalStateException e) {
+                System.out.println("Aviso de Negócio: " + e.getMessage());
+            }
+            System.out.println();
+        }
 
-        System.out.println("\n=== EXECUÇÃO CONCLUÍDA COM SUCESSO ===");
+        System.out.println("=== EXECUÇÃO FINALIZADA COM SUCESSO ===");
     }
 }

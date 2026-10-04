@@ -2,6 +2,10 @@ package biblioteca;
 
 import java.util.Objects;
 
+/**
+ * Representa um livro no acervo da biblioteca.
+ * Implementa ItemAcervo e gerencia seu estoque através de Composição com Disponibilidade.
+ */
 public class Livro implements ItemAcervo {
 
     private String autor;
@@ -18,7 +22,7 @@ public class Livro implements ItemAcervo {
         RESERVADO
     }
 
-    // Construtor ajustado para criar a PARTE internamente (Composição)
+    // Construtor principal (Composição interna da parte)
     public Livro(String autor, String titulo, int codigo, int quantidadeInicial) {
         if (autor == null || autor.isBlank()) {
             throw new IllegalArgumentException("Autor não pode ser nulo ou vazio.");
@@ -35,21 +39,19 @@ public class Livro implements ItemAcervo {
         this.codigo = codigo;
         this.status = StatusLivro.DISPONIVEL;
 
-        // REQUISITO: Criação interna da parte
+        // Criação da parte internamente
         this.disponibilidade = new Disponibilidade(quantidadeInicial);
     }
 
-    // Sobrecarga de construtor padronizando 1 exemplar caso não seja informada a quantidade
+    // Sobrecarga de construtor (padrão: 1 exemplar)
     public Livro(String autor, String titulo, int codigo) {
         this(autor, titulo, codigo, 1);
     }
 
-    // --- REQUISITO: Método de remoção/esvaziamento ---
     public void esvaziarEstoque() {
         this.disponibilidade.setQuantidade(0);
     }
 
-    // --- REQUISITO: Cálculo delegado à parte ---
     public double calcularCustoManutencaoEstoque(double custoPorExemplar) {
         return this.disponibilidade.calcularTaxaManutencaoEstoque(custoPorExemplar);
     }
