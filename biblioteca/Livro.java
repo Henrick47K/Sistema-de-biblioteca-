@@ -2,7 +2,7 @@ package biblioteca;
 
 import java.util.Objects;
 
-public class Livro {
+public class Livro implements ItemAcervo {
 
     private String autor;
     private String titulo;
@@ -62,6 +62,7 @@ public class Livro {
         System.out.println("Livro '" + titulo + "' cadastrado!");
     }
 
+    @Override
     public void emprestar() {
         if (this.status == StatusLivro.EMPRESTADO) {
             throw new IllegalStateException("Livro já está emprestado.");
@@ -71,6 +72,7 @@ public class Livro {
         System.out.println("Livro '" + titulo + "' emprestado!");
     }
 
+    @Override
     public void devolver() {
         if (this.status == StatusLivro.DISPONIVEL) {
             throw new IllegalStateException("Livro já está disponível.");
@@ -80,6 +82,7 @@ public class Livro {
         System.out.println("Livro '" + titulo + "' devolvido!");
     }
 
+    @Override
     public void reservar() {
         if (this.status == StatusLivro.EMPRESTADO) {
             throw new IllegalStateException("Não é possível reservar um livro emprestado.");
@@ -109,7 +112,9 @@ public class Livro {
         this.autor = autor;
     }
 
+    @Override
     public String getTitulo() { return titulo; }
+
     public void setTitulo(String titulo) {
         if (titulo == null || titulo.isBlank()) {
             throw new IllegalArgumentException("Título não pode ser nulo ou vazio.");
