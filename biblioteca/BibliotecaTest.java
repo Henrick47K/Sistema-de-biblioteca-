@@ -5,11 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class BibliotecaTest {
 
-    // --- TESTES DE HERANÇA DE VALIDAÇÃO E ATRIBUTOS PRÓPRIOS ---
-
     @Test
     void testHerancaDeValidacaoEAtributosProprios() {
-        // Validação herdada da superclasse Leitor executada através do super no construtor
         assertThrows(IllegalArgumentException.class, () -> {
             new LeitorEstudante("", "Henrique", "henrique@gmail.com", "2026001");
         });
@@ -18,7 +15,6 @@ public class BibliotecaTest {
             new LeitorProfessor("123", "", "henrique@gmail.com", "Computação");
         });
 
-        // Validação dos atributos próprios das subclasses
         assertThrows(IllegalArgumentException.class, () -> {
             new LeitorEstudante("123", "Henrique", "henrique@gmail.com", "");
         });
@@ -27,8 +23,6 @@ public class BibliotecaTest {
             new LeitorProfessor("123", "Henrique", "henrique@gmail.com", null);
         });
     }
-
-    // --- TESTES DE ESPECIALIZAÇÃO DE COMPORTAMENTO ---
 
     @Test
     void testEspecializacaoLimitesEPrazos() {
@@ -56,7 +50,6 @@ public class BibliotecaTest {
         estudante.adicionarEmprestimo(emp2);
         estudante.adicionarEmprestimo(emp3);
 
-        // O 4º empréstimo ultrapassa o limite de 3 do estudante
         assertThrows(IllegalStateException.class, () -> {
             estudante.adicionarEmprestimo(emp4);
         });
@@ -68,7 +61,6 @@ public class BibliotecaTest {
         Livro livro = new Livro("Autor", "Título", 101, 5);
         Emprestimo emp = new Emprestimo(1, professor, livro, "01/09/2026");
 
-        // Métodos de coleção herdados diretamente de Leitor
         professor.adicionarEmprestimo(emp);
         assertEquals(1, professor.getEmprestimos().size());
         assertEquals(emp, professor.buscarEmprestimoPorId(1));
@@ -76,8 +68,6 @@ public class BibliotecaTest {
         assertTrue(professor.removerEmprestimo(1));
         assertEquals(0, professor.getEmprestimos().size());
     }
-
-    // --- TESTES ORIGINAIS DAS ETAPAS ANTERIORES PRESERVADOS ---
 
     @Test
     void testConstrutoresInvalidosLancamExcecao() {
@@ -90,7 +80,7 @@ public class BibliotecaTest {
         });
 
         assertThrows(IllegalArgumentException.class, () -> {
-            new Disponibilidade(-5);
+            new Livro("Dante Alighieri", "Inferno de Dante", 1, -5);
         });
 
         Leitor leitorValido = new Leitor("123", "Henrique", "henrique@gmail.com");
@@ -123,12 +113,12 @@ public class BibliotecaTest {
 
     @Test
     void testInvarianteDisponibilidadeEEmprestimo() {
-        Disponibilidade disp = new Disponibilidade(1);
-        assertTrue(disp.isDisponivel());
+        Livro livroDisp = new Livro("Dante Alighieri", "Inferno de Dante", 102, 1);
+        assertTrue(livroDisp.isDisponivel());
 
-        disp.diminuirQuantidade();
-        assertEquals(0, disp.getQuantidade());
-        assertFalse(disp.isDisponivel());
+        livroDisp.emprestar();
+        assertEquals(0, livroDisp.getDisponibilidade());
+        assertFalse(livroDisp.isDisponivel());
 
         Leitor leitor = new Leitor("123", "Henrique", "henrique@gmail.com");
         Livro livro = new Livro("Dante Alighieri", "Inferno de Dante", 101);
@@ -145,8 +135,8 @@ public class BibliotecaTest {
 
     @Test
     void testValidaTransicoesDeEstadoInvalidas() {
-        Disponibilidade disp = new Disponibilidade(0);
-        assertThrows(IllegalStateException.class, disp::diminuirQuantidade);
+        Livro livroSemEstoque = new Livro("Dante Alighieri", "Inferno de Dante", 201, 0);
+        assertThrows(IllegalStateException.class, livroSemEstoque::emprestar);
 
         Livro livro = new Livro("Dante Alighieri", "Inferno de Dante", 101);
         livro.emprestar();
@@ -209,16 +199,14 @@ public class BibliotecaTest {
     }
 
     @Test
-    void testComposicaoEsvaziamentoECalculoDelegado() {
+    void testEsvaziamentoECalculoDisponibilidadeLivro() {
         Livro livro = new Livro("Dante Alighieri", "Inferno", 101, 5);
 
-        assertNotNull(livro.getDisponibilidade());
-        assertEquals(5, livro.getDisponibilidade().getQuantidade());
-
+        assertEquals(5, livro.getDisponibilidade());
         assertEquals(50.0, livro.calcularCustoManutencaoEstoque(10.0));
 
         livro.esvaziarEstoque();
-        assertEquals(0, livro.getDisponibilidade().getQuantidade());
-        assertFalse(livro.getDisponibilidade().isDisponivel());
+        assertEquals(0, livro.getDisponibilidade());
+        assertFalse(livro.isDisponivel());
     }
 }

@@ -4,7 +4,7 @@ import java.util.Objects;
 
 /**
  * Representa um livro no acervo da biblioteca.
- * Implementa ItemAcervo e gerencia seu estoque através de Composição com Disponibilidade.
+ * Implementa ItemAcervo e gerencia sua disponibilidade/estoque diretamente como um atributo.
  */
 public class Livro implements ItemAcervo {
 
@@ -12,9 +12,7 @@ public class Livro implements ItemAcervo {
     private String titulo;
     private int codigo;
     private StatusLivro status;
-
-    // --- COMPOSIÇÃO: Relação Todo (Livro) -> Parte (Disponibilidade) ---
-    private Disponibilidade disponibilidade;
+    private int disponibilidade; // Atributo de quantidade disponível no estoque
 
     public enum StatusLivro {
         DISPONIVEL,
@@ -22,8 +20,7 @@ public class Livro implements ItemAcervo {
         RESERVADO
     }
 
-    // Construtor principal (Composição interna da parte)
-    public Livro(String autor, String titulo, int codigo, int quantidadeInicial) {
+    public Livro(String autor, String titulo, int codigo, int disponibilidadeInicial) {
         if (autor == null || autor.isBlank()) {
             throw new IllegalArgumentException("Autor não pode ser nulo ou vazio.");
         }
@@ -33,31 +30,34 @@ public class Livro implements ItemAcervo {
         if (codigo <= 0) {
             throw new IllegalArgumentException("O código do livro deve ser maior que zero.");
         }
+        if (disponibilidadeInicial < 0) {
+            throw new IllegalArgumentException("A disponibilidade não pode ser negativa.");
+        }
 
         this.autor = autor;
         this.titulo = titulo;
         this.codigo = codigo;
+        this.disponibilidade = disponibilidadeInicial;
         this.status = StatusLivro.DISPONIVEL;
-
-        // Criação da parte internamente
-        this.disponibilidade = new Disponibilidade(quantidadeInicial);
     }
 
-    // Sobrecarga de construtor (padrão: 1 exemplar)
     public Livro(String autor, String titulo, int codigo) {
         this(autor, titulo, codigo, 1);
     }
 
+    public boolean isDisponivel() {
+        return this.disponibilidade > 0 && this.status != StatusLivro.EMPRESTADO;
+    }
+
     public void esvaziarEstoque() {
-        this.disponibilidade.setQuantidade(0);
+        this.disponibilidade = 0;
     }
 
     public double calcularCustoManutencaoEstoque(double custoPorExemplar) {
-        return this.disponibilidade.calcularTaxaManutencaoEstoque(custoPorExemplar);
-    }
-
-    public Disponibilidade getDisponibilidade() {
-        return disponibilidade;
+        if (custoPorExemplar < 0) {
+            throw new IllegalArgumentException("O custo por exemplar não pode ser negativo.");
+        }
+        return this.disponibilidade * custoPorExemplar;
     }
 
     public void cadastroLivro() {
@@ -69,18 +69,21 @@ public class Livro implements ItemAcervo {
         if (this.status == StatusLivro.EMPRESTADO) {
             throw new IllegalStateException("Livro já está emprestado.");
         }
-        this.disponibilidade.diminuirQuantidade();
-        status = StatusLivro.EMPRESTADO;
+        if (this.disponibilidade <= 0) {
+            throw new IllegalStateException("Não há exemplares disponíveis para empréstimo.");
+        }
+        this.disponibilidade--;
+        this.status = StatusLivro.EMPRESTADO;
         System.out.println("Livro '" + titulo + "' emprestado!");
     }
 
     @Override
     public void devolver() {
-        if (this.status == StatusLivro.DISPONIVEL) {
+        if (this.status == StatusLivro.DISPONIVEL && this.disponibilidade > 0) {
             throw new IllegalStateException("Livro já está disponível.");
         }
-        this.disponibilidade.aumentarQuantidade();
-        status = StatusLivro.DISPONIVEL;
+        this.disponibilidade++;
+        this.status = StatusLivro.DISPONIVEL;
         System.out.println("Livro '" + titulo + "' devolvido!");
     }
 
@@ -89,7 +92,7 @@ public class Livro implements ItemAcervo {
         if (this.status == StatusLivro.EMPRESTADO) {
             throw new IllegalStateException("Não é possível reservar um livro emprestado.");
         }
-        status = StatusLivro.RESERVADO;
+        this.status = StatusLivro.RESERVADO;
         System.out.println("Livro '" + titulo + "' reservado!");
     }
 
@@ -133,4 +136,13 @@ public class Livro implements ItemAcervo {
     }
 
     public StatusLivro getStatus() { return status; }
+
+    public int getDisponibilidade() { return disponibilidade; }
+
+    public void setDisponibilidade(int disponibilidade) {
+        if (disponibilidade < 0) {
+            throw new IllegalArgumentException("A disponibilidade não pode ser negativa.");
+        }
+        this.disponibilidade = disponibilidade;
+    }
 }
