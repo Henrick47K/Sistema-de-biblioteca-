@@ -42,7 +42,6 @@ public class Revista implements ItemAcervo {
 
     @Override
     public void reservar() {
-        // Regra de negócio diferente: Revistas são periódicos de alta rotatividade
         System.out.println("Reserva indisponível: Revistas são apenas para leitura no local ou empréstimo imediato.");
     }
 

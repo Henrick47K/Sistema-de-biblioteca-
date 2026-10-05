@@ -27,17 +27,14 @@ public class Leitor {
         this.emprestimos = new ArrayList<>();
     }
 
-    // Método especializado pelas subclasses (Limite padrão: 2)
     public int getLimiteEmprestimos() {
         return 2;
     }
 
-    // Método especializado pelas subclasses (Prazo padrão: 7 dias)
     public int getPrazoDevolucaoDias() {
         return 7;
     }
 
-    // Reutiliza e consulta polimorficamente o limite específico do leitor
     public void adicionarEmprestimo(Emprestimo emprestimo) {
         if (emprestimo == null) {
             throw new IllegalArgumentException("Empréstimo não pode ser nulo.");

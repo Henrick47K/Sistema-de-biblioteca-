@@ -56,7 +56,6 @@ public class Emprestimo {
         System.out.println("Empréstimo " + id + " finalizado!");
     }
 
-    // --- equals e hashCode baseados no ID para suportar a verificação de duplicidade ---
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

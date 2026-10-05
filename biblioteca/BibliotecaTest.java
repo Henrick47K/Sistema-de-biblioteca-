@@ -1,6 +1,8 @@
 package biblioteca;
 
 import org.junit.jupiter.api.Test;
+import java.util.ArrayList;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BibliotecaTest {
@@ -92,6 +94,14 @@ public class BibliotecaTest {
 
         assertThrows(IllegalArgumentException.class, () -> {
             new Emprestimo(1, null, livroValido, "17/08/2026");
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Revista("", 1);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Revista("Superinteressante", 0);
         });
     }
 
@@ -208,5 +218,58 @@ public class BibliotecaTest {
         livro.esvaziarEstoque();
         assertEquals(0, livro.getDisponibilidade());
         assertFalse(livro.isDisponivel());
+    }
+
+    @Test
+    void testItemAcervoRevista() {
+        Revista revista = new Revista("National Geographic", 204);
+
+        assertEquals("National Geographic (Edição 204)", revista.getTitulo());
+        assertFalse(revista.isEmprestada());
+
+        assertDoesNotThrow(revista::reservar);
+
+        revista.emprestar();
+        assertTrue(revista.isEmprestada());
+        assertThrows(IllegalStateException.class, revista::emprestar);
+
+        revista.devolver();
+        assertFalse(revista.isEmprestada());
+        assertThrows(IllegalStateException.class, revista::devolver);
+    }
+
+    @Test
+    void testItemAcervoLivro() {
+        ItemAcervo livroItem = new Livro("Robert C. Martin", "Clean Code", 102, 1);
+
+        assertEquals("Clean Code", livroItem.getTitulo());
+
+        livroItem.reservar();
+        livroItem.emprestar();
+        assertThrows(IllegalStateException.class, livroItem::emprestar);
+
+        livroItem.devolver();
+    }
+
+    @Test
+    void testPolimorfismoItemAcervo() {
+        List<ItemAcervo> acervo = new ArrayList<>();
+        ItemAcervo livro = new Livro("Dante Alighieri", "Inferno", 101, 2);
+        ItemAcervo revista = new Revista("Superinteressante", 450);
+
+        acervo.add(livro);
+        acervo.add(revista);
+
+        for (ItemAcervo item : acervo) {
+            assertDoesNotThrow(item::emprestar, "O empréstimo deve ser executado polimorficamente sem falhas.");
+        }
+
+        for (ItemAcervo item : acervo) {
+            assertThrows(IllegalStateException.class, item::emprestar, "A segunda tentativa de empréstimo deve falhar.");
+        }
+
+        for (ItemAcervo item : acervo) {
+            assertDoesNotThrow(item::devolver, "A devolução deve ser executada polimorficamente sem falhas.");
+        }
     }
 }

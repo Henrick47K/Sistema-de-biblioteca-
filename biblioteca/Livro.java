@@ -12,7 +12,7 @@ public class Livro implements ItemAcervo {
     private String titulo;
     private int codigo;
     private StatusLivro status;
-    private int disponibilidade; // Atributo de quantidade disponível no estoque
+    private int disponibilidade;
 
     public enum StatusLivro {
         DISPONIVEL,
