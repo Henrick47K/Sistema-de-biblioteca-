@@ -1,9 +1,9 @@
-package biblioteca;
+package biblioteca.dominio;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Leitor {
+public abstract class Leitor {
 
     private String cpf;
     private String nome;
@@ -27,13 +27,9 @@ public class Leitor {
         this.emprestimos = new ArrayList<>();
     }
 
-    public int getLimiteEmprestimos() {
-        return 2;
-    }
+    public abstract int getLimiteEmprestimos();
 
-    public int getPrazoDevolucaoDias() {
-        return 7;
-    }
+    public abstract int getPrazoDevolucaoDias();
 
     public void adicionarEmprestimo(Emprestimo emprestimo) {
         if (emprestimo == null) {

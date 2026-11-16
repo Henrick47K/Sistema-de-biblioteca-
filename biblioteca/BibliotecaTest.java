@@ -1,5 +1,4 @@
-package biblioteca;
-
+import biblioteca.dominio.*;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +73,7 @@ public class BibliotecaTest {
     @Test
     void testConstrutoresInvalidosLancamExcecao() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new Leitor("", "Henrique", "henrique@gmail.com");
+            new LeitorEstudante("", "Henrique", "henrique@gmail.com", "2026001");
         });
 
         assertThrows(IllegalArgumentException.class, () -> {
@@ -85,7 +84,7 @@ public class BibliotecaTest {
             new Livro("Dante Alighieri", "Inferno de Dante", 1, -5);
         });
 
-        Leitor leitorValido = new Leitor("123", "Henrique", "henrique@gmail.com");
+        Leitor leitorValido = new LeitorEstudante("123", "Henrique", "henrique@gmail.com", "2026001");
         Livro livroValido = new Livro("Dante Alighieri", "Inferno de Dante", 1);
 
         assertThrows(IllegalArgumentException.class, () -> {
@@ -130,7 +129,7 @@ public class BibliotecaTest {
         assertEquals(0, livroDisp.getDisponibilidade());
         assertFalse(livroDisp.isDisponivel());
 
-        Leitor leitor = new Leitor("123", "Henrique", "henrique@gmail.com");
+        Leitor leitor = new LeitorEstudante("123", "Henrique", "henrique@gmail.com", "2026001");
         Livro livro = new Livro("Dante Alighieri", "Inferno de Dante", 101);
 
         Emprestimo emp = new Emprestimo(1, leitor, livro, "17/08/2026");
@@ -152,7 +151,7 @@ public class BibliotecaTest {
         livro.emprestar();
         assertThrows(IllegalStateException.class, livro::emprestar);
 
-        Leitor leitor = new Leitor("123", "Henrique", "henrique@gmail.com");
+        Leitor leitor = new LeitorEstudante("123", "Henrique", "henrique@gmail.com", "2026001");
         Emprestimo emp = new Emprestimo(1, leitor, livro, "17/08/2026");
         emp.finalizarEmp("24/08/2026");
         assertThrows(IllegalStateException.class, () -> emp.finalizarEmp("25/08/2026"));
@@ -160,7 +159,7 @@ public class BibliotecaTest {
 
     @Test
     void testInclusaoEConsultaEmprestimo() {
-        Leitor leitor = new Leitor("123", "Henrique", "henrique@gmail.com");
+        Leitor leitor = new LeitorEstudante("123", "Henrique", "henrique@gmail.com", "2026001");
         Livro livro = new Livro("Dante Alighieri", "Inferno", 101);
         Emprestimo emp = new Emprestimo(1, leitor, livro, "17/08/2026");
 
@@ -173,7 +172,7 @@ public class BibliotecaTest {
 
     @Test
     void testImpedirDuplicidades() {
-        Leitor leitor = new Leitor("123", "Henrique", "henrique@gmail.com");
+        Leitor leitor = new LeitorEstudante("123", "Henrique", "henrique@gmail.com", "2026001");
         Livro livro = new Livro("Dante Alighieri", "Inferno", 101);
         Emprestimo emp1 = new Emprestimo(1, leitor, livro, "17/08/2026");
         Emprestimo empDuplicado = new Emprestimo(1, leitor, livro, "17/08/2026");
@@ -187,7 +186,7 @@ public class BibliotecaTest {
 
     @Test
     void testRemocaoEmprestimo() {
-        Leitor leitor = new Leitor("123", "Henrique", "henrique@gmail.com");
+        Leitor leitor = new LeitorEstudante("123", "Henrique", "henrique@gmail.com", "2026001");
         Livro livro = new Livro("Dante Alighieri", "Inferno", 101);
         Emprestimo emp = new Emprestimo(1, leitor, livro, "17/08/2026");
 
@@ -199,7 +198,7 @@ public class BibliotecaTest {
 
     @Test
     void testProtecaoDaColecao() {
-        Leitor leitor = new Leitor("123", "Henrique", "henrique@gmail.com");
+        Leitor leitor = new LeitorEstudante("123", "Henrique", "henrique@gmail.com", "2026001");
         Livro livro = new Livro("Dante Alighieri", "Inferno", 101);
         Emprestimo emp = new Emprestimo(1, leitor, livro, "17/08/2026");
 
@@ -271,5 +270,11 @@ public class BibliotecaTest {
         for (ItemAcervo item : acervo) {
             assertDoesNotThrow(item::devolver, "A devolução deve ser executada polimorficamente sem falhas.");
         }
+
+        Leitor estudante = new LeitorEstudante("123", "Lucas", "lucas@email.com", "EST123");
+        Emprestimo empRevista = new Emprestimo(10, estudante, revista, "26/10/2026");
+        empRevista.iniciarEmp();
+        assertEquals("Superinteressante (Edição 450)", empRevista.getItem().getTitulo());
+        empRevista.finalizarEmp("27/10/2026");
     }
 }

@@ -1,4 +1,4 @@
-package biblioteca;
+package biblioteca.dominio;
 
 import java.util.Objects;
 
@@ -6,7 +6,7 @@ public class Emprestimo {
 
     private int id;
     private Leitor leitor;
-    private Livro livro;
+    private ItemAcervo item;
     private String dataEmp;
     private String dataDev;
     private StatusEmprestimo status;
@@ -16,15 +16,15 @@ public class Emprestimo {
         FINALIZADO
     }
 
-    public Emprestimo(int id, Leitor leitor, Livro livro, String dataEmp) {
+    public Emprestimo(int id, Leitor leitor, ItemAcervo item, String dataEmp) {
         if (id <= 0) {
             throw new IllegalArgumentException("ID do empréstimo deve ser maior que zero.");
         }
         if (leitor == null) {
             throw new IllegalArgumentException("Leitor não pode ser nulo.");
         }
-        if (livro == null) {
-            throw new IllegalArgumentException("Livro não pode ser nulo.");
+        if (item == null) {
+            throw new IllegalArgumentException("Item do acervo não pode ser nulo.");
         }
         if (dataEmp == null || dataEmp.isBlank()) {
             throw new IllegalArgumentException("Data de empréstimo não pode ser nula ou vazia.");
@@ -32,7 +32,7 @@ public class Emprestimo {
 
         this.id = id;
         this.leitor = leitor;
-        this.livro = livro;
+        this.item = item;
         this.dataEmp = dataEmp;
         this.status = StatusEmprestimo.ATIVO;
     }
@@ -42,7 +42,7 @@ public class Emprestimo {
             throw new IllegalStateException("Empréstimo finalizado não pode ser reiniciado.");
         }
         this.status = StatusEmprestimo.ATIVO;
-        this.livro.emprestar();
+        this.item.emprestar();
         System.out.println("Empréstimo " + id + " iniciado para " + leitor.getNome() + "!");
     }
 
@@ -52,7 +52,7 @@ public class Emprestimo {
         }
         setDataDev(dataDev);
         this.status = StatusEmprestimo.FINALIZADO;
-        this.livro.devolver();
+        this.item.devolver();
         System.out.println("Empréstimo " + id + " finalizado!");
     }
 
@@ -78,7 +78,7 @@ public class Emprestimo {
     }
 
     public Leitor getLeitor() { return leitor; }
-    public Livro getLivro() { return livro; }
+    public ItemAcervo getItem() { return item; }
     public String getDataEmp() { return dataEmp; }
 
     public void setDataEmp(String dataEmp) {

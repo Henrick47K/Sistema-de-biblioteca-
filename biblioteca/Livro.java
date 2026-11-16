@@ -1,4 +1,4 @@
-package biblioteca;
+package biblioteca.dominio;
 
 import java.util.Objects;
 

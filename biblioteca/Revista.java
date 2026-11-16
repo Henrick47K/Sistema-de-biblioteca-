@@ -1,4 +1,4 @@
-package biblioteca;
+package biblioteca.dominio;
 
 /**
  * Representa uma revista/periódico no acervo da biblioteca.

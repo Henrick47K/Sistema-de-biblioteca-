@@ -1,4 +1,4 @@
-package biblioteca;
+package biblioteca.dominio;
 
 /**
  * Contrato que define os comportamentos essenciais de qualquer item pertencente

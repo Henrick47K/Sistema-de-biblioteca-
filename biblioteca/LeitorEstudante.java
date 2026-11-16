@@ -1,4 +1,4 @@
-package biblioteca;
+package biblioteca.dominio;
 
 public class LeitorEstudante extends Leitor {
 
