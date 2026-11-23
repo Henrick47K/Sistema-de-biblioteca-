@@ -1,50 +1,44 @@
-# BiblioTech
+# BiblioTech — Sistema de Gestão de Biblioteca
 
-Tag BiblioTech V1.0.0
+**Integrantes:** Henrique Duarte Lima · Rodrigo Mariotti Possel
 
-Primeira versão estável do Módulo Core da Biblioteca, contendo entidades de domínio, tratamento de exceções, validações de regras de negócio e testes automatizados.  Recursos Implementados:Gestão de Leitor: Cadastro e validação de dados obrigatórios de identificação.  Gestão de Livro: Alteração de estados (DISPONIVEL, EMPRESTADO, RESERVADO) com proteção de regras de negócio.  Controle de Disponibilidade: Controle de quantidade em estoque e prevenção contra saldos negativos.  Ciclo de Empréstimo: Criação, inicialização e encerramento de empréstimos com atualização automática do status do livro.  Execução e Testes: Classe Main com o fluxo completo da aplicação e suíte de testes unitários com JUnit 5 na classe BibliotecaTest para garantir a integridade do sistema. 
+---
 
-1 - Problema : Bibliotecas sem automação enfrentam falhas graves de consistência, como permissão de empréstimos duplicados, registros com campos em branco e divergências no controle físico de estoque.
+## 1. O que é o sistema
 
-2 - Escopo: Aplicação Java para automação do fluxo de biblioteca. O sistema abrange o cadastro de leitores, controle do acervo, gerenciamento do estoque físico e execução do ciclo de vida das reservas e empréstimos. O escopo inclui a garantia de integridade via exceções e testes unitários
+* **Problema:** Bibliotecas sem automação sofrem com empréstimos duplicados, registros incompletos e divergências no estoque físico.
+* **Escopo:** Aplicação Java em camadas (`app`, `dominio`, `repositorio`, `servico`) para cadastro de leitores, controle de estoque e estados do acervo (livros e revistas), reservas, empréstimos e devoluções com persistência em CSV (`dados/emprestimos.csv`), protegida por exceções próprias e testes automatizados.
 
-INTEGRANTES:
+---
 
--> Henrique Duarte Lima
-<br>
--> Rodrigo Mariotti Possel
+## 2. Regras de negócio
 
-RESUMO:
-<br>
--> Sistema de biblioteca para permitir controle de estoque de livros, Permitir alugar livros, Cadastro de usuários
-<br>
-USUÁRIOS:
-<br>
--> Leitores
-<br>
--> Autores dos Livros
-<br>
-FUNCIONALIDADES INICIAIS:
-<br>
+* **Perfis e cotas:**
+  * **Estudante (`LeitorEstudante`):** máximo de **3 empréstimos ativos** simultâneos e prazo de **14 dias**.
+  * **Professor (`LeitorProfessor`):** máximo de **10 empréstimos ativos** simultâneos e prazo de **30 dias**.
+* **Liberação de vaga:** Apenas empréstimos `ATIVO` ocupam a cota do leitor; ao finalizar (`FINALIZADO`), a vaga é liberada.
+* **Acervo (`ItemAcervo`):**
+  * **Livro:** controla estoque e estados (`DISPONIVEL`, `RESERVADO`, `EMPRESTADO`). Não pode ser emprestado nem reservado se já estiver emprestado ou sem estoque.
+  * **Revista:** pode ser emprestada e devolvida, mas não possui reserva prévia.
+* **Integridade na origem:** Rejeita e-mails fora do padrão `usuario@dominio.com`, datas inexistentes (`dd/MM/aaaa`) e IDs duplicados. Falhas não deixam estado alterado pela metade na memória ou no CSV.
 
--> Cadastro de livros
-<br>
--> Cadastro de leitores
-<br>
--> Consulta de disponibilidade
-<br>
--> Pesquisa de livros por título ou autor
-<br>
--> Registro de empréstimos
-<br>
--> Registro de devoluções 
-<br>
--> Consulta de livros emprestados
-<br>
+---
 
+## 3. Instruções de execução
 
-A pasta biblioteca contem o código do projeto!
-<br>
+### Pré-requisitos
+* Java JDK 17+ (`java -version`)
+* Apache Maven 3.8+ (`mvn -version`)
+* Git (`git --version`)
 
+### Passo a passo em máquina limpa
+```bash
+# 1. Clonar o repositório
+git clone <URL_DO_REPOSITORIO>
+cd <NOME_DA_PASTA_DO_PROJETO>
 
+# 2. Rodar os testes automatizados
+mvn test
 
+# 3. Compilar e executar o sistema
+mvn compile exec:java -Dexec.mainClass="biblioteca.app.Main"
