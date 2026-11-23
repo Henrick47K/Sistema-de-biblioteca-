@@ -3,6 +3,10 @@ package biblioteca.dominio;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe base abstrata que representa um leitor da biblioteca.
+ * Concentra validações de entrada na origem e o controle de empréstimos ativos.
+ */
 public abstract class Leitor {
 
     private String cpf;
@@ -11,15 +15,10 @@ public abstract class Leitor {
     private List<Emprestimo> emprestimos;
 
     public Leitor(String cpf, String nome, String email) {
-        if (cpf == null || cpf.isBlank()) {
-            throw new IllegalArgumentException("CPF não pode ser nulo ou vazio.");
-        }
-        if (nome == null || nome.isBlank()) {
-            throw new IllegalArgumentException("Nome não pode ser nulo ou vazio.");
-        }
-        if (email == null || email.isBlank()) {
-            throw new IllegalArgumentException("E-mail não pode ser nulo ou vazio.");
-        }
+        ValidadorDominio.exigirTextoNaoVazio(cpf, "CPF não pode ser nulo ou vazio.");
+        ValidadorDominio.exigirTextoNaoVazio(nome, "Nome não pode ser nulo ou vazio.");
+        ValidadorDominio.exigirTextoNaoVazio(email, "E-mail não pode ser nulo ou vazio.");
+        validarFormatoEmail(email);
 
         this.cpf = cpf;
         this.nome = nome;
@@ -27,18 +26,41 @@ public abstract class Leitor {
         this.emprestimos = new ArrayList<>();
     }
 
+    private void validarFormatoEmail(String email) {
+        int arroba = email.indexOf('@');
+        if (arroba <= 0
+                || arroba >= email.length() - 1
+                || email.indexOf('@', arroba + 1) != -1
+                || !email.substring(arroba + 1).contains(".")
+                || email.startsWith(".", arroba + 1)
+                || email.endsWith(".")) {
+            throw new DadosInvalidosException(
+                    "E-mail inválido ('" + email + "'): use o formato usuario@dominio.com e tente novamente.");
+        }
+    }
+
     public abstract int getLimiteEmprestimos();
 
     public abstract int getPrazoDevolucaoDias();
 
+    // Conta apenas os empréstimos com status ATIVO (devolvidos não bloqueiam a cota do leitor)
+    public long getQuantidadeEmprestimosAtivos() {
+        return this.emprestimos.stream()
+                .filter(e -> e.getStatus() == Emprestimo.StatusEmprestimo.ATIVO)
+                .count();
+    }
+
+    // Verifica previamente se o leitor ainda possui cota livre antes de alterar o estado
+    public boolean podeRealizarNovoEmprestimo() {
+        return getQuantidadeEmprestimosAtivos() < getLimiteEmprestimos();
+    }
+
     public void adicionarEmprestimo(Emprestimo emprestimo) {
-        if (emprestimo == null) {
-            throw new IllegalArgumentException("Empréstimo não pode ser nulo.");
-        }
+        ValidadorDominio.exigirNaoNulo(emprestimo, "Empréstimo não pode ser nulo.");
         if (this.emprestimos.contains(emprestimo)) {
             throw new IllegalStateException("Este empréstimo já está cadastrado para o leitor.");
         }
-        if (this.emprestimos.size() >= getLimiteEmprestimos()) {
+        if (!podeRealizarNovoEmprestimo()) {
             throw new IllegalStateException("Limite de empréstimos atingido para este leitor.");
         }
         this.emprestimos.add(emprestimo);
@@ -65,39 +87,27 @@ public abstract class Leitor {
         return List.copyOf(emprestimos);
     }
 
-    public void cadastroLeitor() {
-        System.out.println("Leitor " + nome + " cadastrado com sucesso!");
-    }
-
     public void reservarLivro(Livro livro) {
-        if (livro == null) {
-            throw new IllegalArgumentException("Livro não pode ser nulo.");
-        }
+        ValidadorDominio.exigirNaoNulo(livro, "Livro não pode ser nulo.");
         livro.reservar();
-        System.out.println("Livro '" + livro.getTitulo() + "' reservado para o leitor " + nome + "!");
     }
 
     public String getCpf() { return cpf; }
     public void setCpf(String cpf) {
-        if (cpf == null || cpf.isBlank()) {
-            throw new IllegalArgumentException("CPF não pode ser nulo ou vazio.");
-        }
+        ValidadorDominio.exigirTextoNaoVazio(cpf, "CPF não pode ser nulo ou vazio.");
         this.cpf = cpf;
     }
 
     public String getNome() { return nome; }
     public void setNome(String nome) {
-        if (nome == null || nome.isBlank()) {
-            throw new IllegalArgumentException("Nome não pode ser nulo ou vazio.");
-        }
+        ValidadorDominio.exigirTextoNaoVazio(nome, "Nome não pode ser nulo ou vazio.");
         this.nome = nome;
     }
 
     public String getEmail() { return email; }
     public void setEmail(String email) {
-        if (email == null || email.isBlank()) {
-            throw new IllegalArgumentException("E-mail não pode ser nulo ou vazio.");
-        }
+        ValidadorDominio.exigirTextoNaoVazio(email, "E-mail não pode ser nulo ou vazio.");
+        validarFormatoEmail(email);
         this.email = email;
     }
 }

@@ -2,10 +2,6 @@ package biblioteca.dominio;
 
 import java.util.Objects;
 
-/**
- * Representa um livro no acervo da biblioteca.
- * Implementa ItemAcervo e gerencia sua disponibilidade/estoque diretamente como um atributo.
- */
 public class Livro implements ItemAcervo {
 
     private String autor;
@@ -21,18 +17,10 @@ public class Livro implements ItemAcervo {
     }
 
     public Livro(String autor, String titulo, int codigo, int disponibilidadeInicial) {
-        if (autor == null || autor.isBlank()) {
-            throw new IllegalArgumentException("Autor não pode ser nulo ou vazio.");
-        }
-        if (titulo == null || titulo.isBlank()) {
-            throw new IllegalArgumentException("Título não pode ser nulo ou vazio.");
-        }
-        if (codigo <= 0) {
-            throw new IllegalArgumentException("O código do livro deve ser maior que zero.");
-        }
-        if (disponibilidadeInicial < 0) {
-            throw new IllegalArgumentException("A disponibilidade não pode ser negativa.");
-        }
+        ValidadorDominio.exigirTextoNaoVazio(autor, "Autor não pode ser nulo ou vazio.");
+        ValidadorDominio.exigirTextoNaoVazio(titulo, "Título não pode ser nulo ou vazio.");
+        ValidadorDominio.exigirMaiorQueZero(codigo, "O código do livro deve ser maior que zero.");
+        ValidadorDominio.exigirNaoNegativo(disponibilidadeInicial, "A disponibilidade não pode ser negativa.");
 
         this.autor = autor;
         this.titulo = titulo;
@@ -45,6 +33,7 @@ public class Livro implements ItemAcervo {
         this(autor, titulo, codigo, 1);
     }
 
+    @Override
     public boolean isDisponivel() {
         return this.disponibilidade > 0 && this.status != StatusLivro.EMPRESTADO;
     }
@@ -60,10 +49,6 @@ public class Livro implements ItemAcervo {
         return this.disponibilidade * custoPorExemplar;
     }
 
-    public void cadastroLivro() {
-        System.out.println("Livro '" + titulo + "' cadastrado!");
-    }
-
     @Override
     public void emprestar() {
         if (this.status == StatusLivro.EMPRESTADO) {
@@ -74,7 +59,6 @@ public class Livro implements ItemAcervo {
         }
         this.disponibilidade--;
         this.status = StatusLivro.EMPRESTADO;
-        System.out.println("Livro '" + titulo + "' emprestado!");
     }
 
     @Override
@@ -84,7 +68,6 @@ public class Livro implements ItemAcervo {
         }
         this.disponibilidade++;
         this.status = StatusLivro.DISPONIVEL;
-        System.out.println("Livro '" + titulo + "' devolvido!");
     }
 
     @Override
@@ -93,7 +76,6 @@ public class Livro implements ItemAcervo {
             throw new IllegalStateException("Não é possível reservar um livro emprestado.");
         }
         this.status = StatusLivro.RESERVADO;
-        System.out.println("Livro '" + titulo + "' reservado!");
     }
 
     @Override
@@ -111,38 +93,27 @@ public class Livro implements ItemAcervo {
 
     public String getAutor() { return autor; }
     public void setAutor(String autor) {
-        if (autor == null || autor.isBlank()) {
-            throw new IllegalArgumentException("Autor não pode ser nulo ou vazio.");
-        }
+        ValidadorDominio.exigirTextoNaoVazio(autor, "Autor não pode ser nulo ou vazio.");
         this.autor = autor;
     }
 
     @Override
     public String getTitulo() { return titulo; }
-
     public void setTitulo(String titulo) {
-        if (titulo == null || titulo.isBlank()) {
-            throw new IllegalArgumentException("Título não pode ser nulo ou vazio.");
-        }
+        ValidadorDominio.exigirTextoNaoVazio(titulo, "Título não pode ser nulo ou vazio.");
         this.titulo = titulo;
     }
 
     public int getCodigo() { return codigo; }
     public void setCodigo(int codigo) {
-        if (codigo <= 0) {
-            throw new IllegalArgumentException("O código do livro deve ser maior que zero.");
-        }
+        ValidadorDominio.exigirMaiorQueZero(codigo, "O código do livro deve ser maior que zero.");
         this.codigo = codigo;
     }
 
     public StatusLivro getStatus() { return status; }
-
     public int getDisponibilidade() { return disponibilidade; }
-
     public void setDisponibilidade(int disponibilidade) {
-        if (disponibilidade < 0) {
-            throw new IllegalArgumentException("A disponibilidade não pode ser negativa.");
-        }
+        ValidadorDominio.exigirNaoNegativo(disponibilidade, "A disponibilidade não pode ser negativa.");
         this.disponibilidade = disponibilidade;
     }
 }

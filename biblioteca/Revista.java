@@ -11,12 +11,8 @@ public class Revista implements ItemAcervo {
     private boolean emprestada;
 
     public Revista(String titulo, int edicao) {
-        if (titulo == null || titulo.isBlank()) {
-            throw new IllegalArgumentException("Título não pode ser nulo ou vazio.");
-        }
-        if (edicao <= 0) {
-            throw new IllegalArgumentException("Número da edição deve ser maior que zero.");
-        }
+        ValidadorDominio.exigirTextoNaoVazio(titulo, "Título não pode ser nulo ou vazio.");
+        ValidadorDominio.exigirMaiorQueZero(edicao, "Número da edição deve ser maior que zero.");
         this.titulo = titulo;
         this.edicao = edicao;
         this.emprestada = false;
@@ -28,7 +24,6 @@ public class Revista implements ItemAcervo {
             throw new IllegalStateException("Revista já está emprestada.");
         }
         emprestada = true;
-        System.out.println("Revista '" + getTitulo() + "' emprestada! Prazo reduzido aplicado.");
     }
 
     @Override
@@ -37,12 +32,17 @@ public class Revista implements ItemAcervo {
             throw new IllegalStateException("Revista já está disponível.");
         }
         emprestada = false;
-        System.out.println("Revista '" + getTitulo() + "' devolvida!");
     }
 
     @Override
     public void reservar() {
-        System.out.println("Reserva indisponível: Revistas são apenas para leitura no local ou empréstimo imediato.");
+        // Regra de negócio: revistas são para leitura local ou empréstimo imediato, sem reserva prévia.
+    }
+
+    @Override
+    public boolean isDisponivel() {
+        // A revista está disponível sempre que não estiver emprestada no momento.
+        return !emprestada;
     }
 
     @Override

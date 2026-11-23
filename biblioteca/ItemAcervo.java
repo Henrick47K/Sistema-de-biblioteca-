@@ -38,4 +38,12 @@ public interface ItemAcervo {
      * @return Nome/Título descritivo do item.
      */
     String getTitulo();
+
+    /**
+     * Verifica previamente se o item pode ser emprestado no momento,
+     * permitindo validar o estado antes de realizar alterações.
+     *
+     * @return true se o item estiver disponível para empréstimo; false caso contrário.
+     */
+    boolean isDisponivel();
 }
