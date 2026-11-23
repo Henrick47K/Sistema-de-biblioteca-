@@ -47,8 +47,26 @@ src/
     └── BibliotecaPersistenciaTest.java  # Testes de regras, exceções, limites e CSV
 
 ## Decisões de projeto
-Persistência desacoplada (EmprestimoRepositorio)Contexto: Salvar histórico em CSV sem acoplar regras de negócio ao disco e sem tornar testes lentos.   Decisão: Criar a interface EmprestimoRepositorio com implementações em arquivo (EmprestimoRepositorioArquivo) e memória (EmprestimoRepositorioMemoria).   Consequência: Testes rodam isolados em memória ou @TempDir[cite: 20] e a troca futura por banco de dados não afeta o domínio.   Hierarquia própria de exceçõesContexto: Exceções genéricas não distinguiam falhas de regra de negócio de erros técnicos de arquivo.   Decisão: Criar BibliotecaException (DadosInvalidosException, ItemIndisponivelException, LimiteEmprestimosExcedidoException) para domínio e RepositorioException (preservando a causa raiz) para persistência.   Consequência: A BibliotecaApp captura cada erro previsível com mensagens claras sem encerrar o programa abruptamente.   Validação prévia e rollback atômicoContexto: Mutar objetos em memória antes de confirmar regras ou gravar no CSV gerava inconsistência em caso de falha.   Decisão: Validar todas as pré-condições antes de alterar estado e reverter alterações em memória via try/catch se o repositório falha .Consequência: Memória e arquivo CSV permanecem sempre sincronizados.
 
-## Como o código evolui:
-(tags)BiblioTech V1.0.0 (v1–v6): Módulo core (Livro, Leitor, Emprestimo), controle de estoque e primeiros testes (BibliotecaTest)[cite: 21].v7–v10: Especialização (LeitorEstudante, LeitorProfessor) e polimorfismo (ItemAcervo, Revista).   v11–v12: Separação em camadas (app, servico, repositorio) e persistência CSV com RegistroEmprestimo.   v13: Validações na origem, exceções próprias, rollback e testes isolados com @TempDir.   v14 (Final): Suíte ampliada (regras de negócio, casos-limite e @ParameterizedTest), refatorações seguras (ValidadorDominio, remoção de métodos vazios, decomposição de BibliotecaApp) e documentação final.
+### 1. Persistência desacoplada por interface (`EmprestimoRepositorio`)
+* **Contexto:** O sistema precisava salvar o histórico de empréstimos em CSV sem acoplar as regras de negócio ao disco e sem tornar os testes dependentes de arquivos fixos[cite: 16, 19].
+* **Decisão:** Criar a interface `EmprestimoRepositorio` com duas implementações intercambiáveis — `EmprestimoRepositorioArquivo` e `EmprestimoRepositorioMemoria` — injetadas via construtor em `BibliotecaService`[cite: 15, 16, 17, 19].
+* **Consequência:** Os testes rodam isolados em memória ou pastas temporárias (`@TempDir`)[cite: 20], e uma futura troca do CSV por banco de dados não exige alterar o domínio[cite: 15, 19].
 
+### 2. Hierarquia própria de exceções de domínio e técnica
+* **Contexto:** Exceções genéricas do Java não distinguiam erros previsíveis de regra de negócio de falhas técnicas de leitura e escrita em arquivo[cite: 1, 3, 18].
+* **Decisão:** Criar `BibliotecaException` (com `DadosInvalidosException`, `ItemIndisponivelException` e `LimiteEmprestimosExcedidoException`) para o domínio e `RepositorioException` (preservando a causa raiz) para a camada de persistência[cite: 3, 4, 7, 11, 16, 18].
+* **Consequência:** A camada `BibliotecaApp` captura cada erro previsível e exibe mensagens claras ao usuário sem encerrar a aplicação abruptamente[cite: 1].
+
+### 3. Validação prévia e rollback atômico no serviço
+* **Contexto:** Alterar a cota do leitor e baixar o estoque do livro antes de confirmar todas as regras ou gravar no CSV poderia deixar os dados inconsistentes se ocorresse alguma falha[cite: 19].
+* **Decisão:** Em `BibliotecaService.realizarEmprestimo`, validar todas as pré-condições antes de mutar qualquer objeto e envolver a efetivação em um `try/catch` que desfaz as alterações em memória caso o repositório lance exceção.
+* **Consequência:** Garante atomicidade nas operações, mantendo memória e arquivo CSV sempre sincronizados mesmo diante de erros.
+
+## Como o código evolui (tags)
+
+* **`BiblioTech V1.0.0` (`v1` – `v6`):** Modelagem inicial do módulo core (`Livro`, `Leitor` e `Emprestimo`), controle de estoque e primeiros testes automatizados (`BibliotecaTest`)[cite: 5, 8, 12, 21].
+* **`v7` – `v10`:** Especialização de perfis de leitor (`LeitorEstudante` e `LeitorProfessor`) e polimorfismo no acervo (`ItemAcervo` e `Revista`)[cite: 6, 9, 10, 14].
+* **`v11` – `v12`:** Separação da arquitetura em camadas (`app`, `servico` e `repositorio`) e persistência em arquivo CSV com o record `RegistroEmprestimo`[cite: 1, 2, 13, 15, 16, 19].
+* **`v13`:** Validações na origem, hierarquia própria de exceções (`BibliotecaException` e `RepositorioException`), rollback atômico em falhas de gravação e testes isolados com `@TempDir`[cite: 3, 5, 8, 18, 19, 20].
+* **`v14` (Versão final):** Suíte de testes ampliada (regras de negócio, casos-limite e `@ParameterizedTest`), refatorações seguras (`ValidadorDominio`, remoção de métodos vazios e decomposição de `BibliotecaApp`) e documentação final.
